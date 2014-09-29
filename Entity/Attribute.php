@@ -25,7 +25,7 @@ class Attribute
     private $value;
 
     /**
-     * @ORM\ManyToOne(targetEntity="Definition", inversedBy="attributes", cascade={"persist", "remove"})
+     * @ORM\ManyToOne(targetEntity="Definition", inversedBy="attributes")
      * @ORM\JoinColumn(name="definition_id", referencedColumnName="id")
      * @var Definition
      */
