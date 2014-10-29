@@ -10,6 +10,8 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class Attribute
 {
+    const ARRAY_DELIMITER = '|';
+
     /**
      * @ORM\Id
      * @ORM\Column(type="integer")
@@ -31,6 +33,12 @@ class Attribute
      */
     private $definition;
 
+    /**
+     * @ORM\Column(type="boolean")
+     * @var boolean
+     */
+    private $isArray = false;
+
     public function __toString()
     {
         return $this->getDefinition()->getName();
@@ -49,11 +57,17 @@ class Attribute
     /**
      * Set value
      *
-     * @param string $value
+     * @param string|array $value
      * @return Attribute
      */
     public function setValue($value)
     {
+        if (is_array($value)) {
+            $value = implode(self::ARRAY_DELIMITER, $value);
+
+            $this->setArray(true);
+        }
+
         $this->value = $value;
 
         return $this;
@@ -62,10 +76,14 @@ class Attribute
     /**
      * Get value
      *
-     * @return string
+     * @return string|array
      */
     public function getValue()
     {
+        if ($this->isArray()){
+            return explode(self::ARRAY_DELIMITER, $this->value);
+        }
+
         return $this->value;
     }
 
@@ -90,5 +108,27 @@ class Attribute
     public function getDefinition()
     {
         return $this->definition;
+    }
+
+    /**
+     * @param bool $isArray
+     *
+     * @return $this
+     */
+    public function setArray($isArray)
+    {
+        $this->isArray = $isArray;
+
+        return $this;
+    }
+
+    /**
+     * Check if value is of array type
+     *
+     * @return bool
+     */
+    public function isArray()
+    {
+        return $this->isArray;
     }
 }
